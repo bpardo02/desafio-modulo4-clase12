@@ -24,4 +24,31 @@ Almacena los errores  registrados
 Para ejecutar el script, asegúrate de que todos los archivos (usuario.py, usuarios.txt, script.py, error.log) estén en el mismo directorio. 
 Luego, ejecuta el siguiente comando en la terminal:
 
+```
 python script.py
+```
+
+## Prerrequisitos o Dependencias
+
+Sistema Operativo Windows, Linux, MacOS
+Lenguaje de programación Python 3.12
+
+## Instalación del Proyecto
+
+Clonar el repositorio:
+
+```bash
+# git@github.com:vanemn/desafio_modulo4_clase12.git
+```
+
+Ingresar a la carpeta del proyecto:
+
+```bash
+# desafio_modulo4_clase12
+```
+
+Autor
+
+- [Vanessa Morales](https://github.com/vanemn)
+- [Benjamín Pardo](https://github.com/bpardo02)
+- [Nicole Pinilla](https://github.com/Npinilla19)
