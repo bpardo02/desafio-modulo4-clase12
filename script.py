@@ -1,52 +1,30 @@
 # script.py
-import json
+import os
 from usuario import Usuario
 
-
-def main():
-    usuarios = []  # Lista para almacenar las instancias de Usuario
-    try:
-        with open("usuarios.txt", "r") as file:
-            for line in file:
+def crear_instancias_usuarios(archivo_usuarios, archivo_errores):
+    usuarios = []
+    if os.path.exists(archivo_usuarios):
+        with open(archivo_usuarios, 'r') as file:
+            for linea in file:
                 try:
-                    # Intentar cargar la línea como JSON
-                    data = json.loads(line.strip())
-
-                    # Crear una instancia de Usuario con los datos del JSON
-                    usuario = Usuario(
-                        nombre=data.get("nombre", "Desconocido"),
-                        apellido=data.get("apellido", "Desconocido"),
-                        email=data.get("email", "Desconocido"),
-                        genero=data.get("genero", "Desconocido"),
-                    )
-
-                    # Añadir la instancia creada a la lista de usuarios
+                    datos_usuario = linea.strip().split(',')
+                    if len(datos_usuario) != 4:
+                        raise ValueError("Formato de línea incorrecto")
+                    nombre, apellido, email, genero = datos_usuario
+                    usuario = Usuario(nombre, apellido, email, genero)
                     usuarios.append(usuario)
-
-                except json.JSONDecodeError as e:
-                    log_error(f"Error al decodificar JSON: {e} - Línea: {line}")
-                except TypeError as e:
-                    log_error(f"Error de tipo al crear Usuario: {e} - Línea: {line}")
-                except KeyError as e:
-                    log_error(f"Error de clave faltante: {e} - Línea: {line}")
                 except Exception as e:
-                    log_error(f"Error inesperado: {e} - Línea: {line}")
-
-    except FileNotFoundError as e:
-        log_error(f"Archivo usuarios.txt no encontrado: {e}")
-    except Exception as e:
-        log_error(f"Error al leer el archivo usuarios.txt: {e}")
-
-    # Imprimir los datos de los usuarios
-    for usuario in usuarios:
-        print(usuario.nombre, usuario.apellidos, usuario.email, usuario.genero)
-
-
-def log_error(message):
-    # Registrar el mensaje de error en error.log
-    with open("error.log", "a") as error_file:
-        error_file.write(message + "\n")
-
+                    with open(archivo_errores, 'a') as error_log:
+                        error_log.write(f"Error al procesar la línea: {linea}\n")
+                        error_log.write(f"Excepción: {e}\n")
+    else:
+        print(f"El archivo {archivo_usuarios} no existe.")
+    return usuarios
 
 if __name__ == "__main__":
-    main()
+    archivo_usuarios = 'usuarios.txt'
+    archivo_errores = 'error.log'
+    usuarios = crear_instancias_usuarios(archivo_usuarios, archivo_errores)
+    for usuario in usuarios:
+        print(f"Usuario creado: {usuario.nombre} {usuario.apellidos}, Email: {usuario.email}, Género: {usuario.genero}")
