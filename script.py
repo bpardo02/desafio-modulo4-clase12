@@ -1,23 +1,26 @@
-# script.py
 import os
+import json
 from usuario import Usuario
 
 def crear_instancias_usuarios(archivo_usuarios, archivo_errores):
     usuarios = []
     if os.path.exists(archivo_usuarios):
-        with open(archivo_usuarios, 'r') as file:
-            for linea in file:
+        with open(archivo_usuarios, 'r') as f:
+            for linea in f:
                 try:
-                    datos_usuario = linea.strip().split(',')
-                    if len(datos_usuario) != 4:
-                        raise ValueError("Formato de línea incorrecto")
-                    nombre, apellido, email, genero = datos_usuario
-                    usuario = Usuario(nombre, apellido, email, genero)
+                    # Intentar cargar la línea como JSON
+                    datos_usuario = json.loads(linea.strip())
+                    # Validar que todos los campos necesarios estén presentes
+                    if not all(k in datos_usuario for k in ("nombre", "apellido", "email", "genero")):
+                        raise ValueError("Faltan campos en la línea")
+                    usuario = Usuario(**datos_usuario)
                     usuarios.append(usuario)
                 except Exception as e:
                     with open(archivo_errores, 'a') as error_log:
                         error_log.write(f"Error al procesar la línea: {linea}\n")
                         error_log.write(f"Excepción: {e}\n")
+                    print(f"Error al procesar la línea: {linea}")
+                    print(f"Excepción: {e}")
     else:
         print(f"El archivo {archivo_usuarios} no existe.")
     return usuarios
