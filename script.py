@@ -3,14 +3,22 @@ import json
 from usuario import Usuario
 
 def crear_instancias_usuarios(archivo_usuarios, archivo_errores):
+    """
+    Lee un archivo de usuarios y crea instancias de la clase Usuario.
+
+    Args:
+        archivo_usuarios (str): El nombre del archivo que contiene los datos de los usuarios.
+        archivo_errores (str): El nombre del archivo donde se registrarán los errores.
+
+    Returns:
+        list: Una lista de instancias de Usuario creadas a partir de los datos del archivo.
+    """
     usuarios = []
     if os.path.exists(archivo_usuarios):
         with open(archivo_usuarios, 'r') as f:
             for linea in f:
                 try:
-                    # Intentar cargar la línea como JSON
                     datos_usuario = json.loads(linea.strip())
-                    # Validar que todos los campos necesarios estén presentes
                     if not all(k in datos_usuario for k in ("nombre", "apellido", "email", "genero")):
                         raise ValueError("Faltan campos en la línea")
                     usuario = Usuario(**datos_usuario)
